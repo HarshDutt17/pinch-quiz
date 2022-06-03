@@ -4,7 +4,23 @@ module.exports = {
     "./src/**/*.js",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors : {
+        blue:{
+          primary : "#04c4db",
+          secondary : "#0c7cd4",
+        },
+        purple:{
+          primary : "#9772FB",
+          secondary : "#764AF1",
+        },
+        white : {
+          primary: "#FFFFFF",
+          secondary: "#F2F2F2",
+          medium : "F6FBF4",
+        },
+      }
+    },
   },
   plugins: [],
 }

@@ -1,21 +1,41 @@
+import { useState } from "react";
 import Quiz from "./components/quiz";
 import './styles/app.css';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Score from "./components/score";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [start, setStart] = useState(false);
   return (
-    <Router>
-      <div className="App">
-        <h1 className="text-center text-5xl font-bold text-gray-50 py-4 bg-blue-400 mb-2">
-          Quiz
-        </h1>
-        <Routes>
-          <Route path="/" exact element={<Quiz />} />
-          <Route path="/score" exact element={<Score />}/>
-        </Routes>
-      </div>
-    </Router>
+    <div className="App font-mono">
+      <h1 className="flex font-sans justify-center items-center text-center text-5xl font-bold text-blue-primary py-4 bg-white ">
+        <img src="/logo.svg" alt="Pinch" className="mb-2" />
+        Quiz
+      </h1>
+      {!start &&
+        <div className="flex-col mx-24 justify-center my-24 ">
+          <p className="my-4">Enter your Name to start the Quiz!</p>
+          <form onSubmit={({ start }) => setStart(true)} method="POST">
+            <input
+              aria-label="Enter your Email Address"
+              type="text"
+              placeholder="Your Name"
+              className="text-sm text-gray-base w-full mr-3 py-5 px-4 h-12 border mb-8"
+              onChange={({ target }) => setUser(target.value)}
+            />
+            <button
+              disabled={!user}
+              type="submit"
+              className={` 
+                            bg-blue-secondary  text-white-primary w-1/6 rounded h-8 font-bold mobiles:mt-2
+                            ${!user && `opacity-50`}     
+                        `}>
+              Start
+            </button>
+          </form>
+        </div>
+      }
+      {start && <Quiz user={user} />}
+    </div>
   );
 }
 

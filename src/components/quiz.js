@@ -1,8 +1,8 @@
 import Papa from "papaparse";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ScoreDisplay from "./scoreDisplay";
 
-export default function Quiz() {
+export default function Quiz({user}) {
     const [data, setData] = useState([]);
     const [fetched, setFetched] = useState(false);
     const [score, setScore] = useState(0);
@@ -10,17 +10,16 @@ export default function Quiz() {
     const [answered, setAnswered] = useState(false)
     const [correctAnswer, setCorrectAnswer] = useState(null);
 
-    const history = useNavigate();
 
     useEffect(() => {
-        if(!fetched){
+        if (!fetched) {
             getData();
         }
         const interval = setInterval(() => {
             setFetched(false);
         }, 1000 * 60 * 60);
         return () => clearInterval(interval);
-    }, [fetched]);
+    }, [fetched, questionNumber]);
 
     const getData = () => {
         Papa.parse(
@@ -29,7 +28,9 @@ export default function Quiz() {
                 download: true,
                 header: true,
                 complete: (results) => {
-                    setData(results.data.map((item, idx) => ({ ...item, id: idx })));
+                    const result = results.data.map((item, idx) => ({ ...item, id: idx }));
+                    const shuffled = [...result].sort(() => 0.5 - Math.random());
+                    setData(shuffled.slice(0, 10));
                     setFetched(true);
                 }
             }
@@ -40,46 +41,42 @@ export default function Quiz() {
     const handleAnswer = (event) => {
         event.preventDefault();
         // console.log(userAnswer, data[questionNumber].Ans)
-        if (event.target.innerHTML === data[questionNumber].Ans) {
+        if (event.target.innerHTML === data[questionNumber].Ans || data[questionNumber].Ans==="") {
             setScore((score) => (score + 1));
             setCorrectAnswer(true);
         } else {
             setCorrectAnswer(false);
         }
         setAnswered(true);
-        setData({...data,  [questionNumber] : {...data[questionNumber], userAns: event.target.innerHTML } })
+        setData(data.map((item,idx) => (idx === questionNumber ? {...item, userAns: event.target.innerHTML} : {...item} )))
         console.log(answered)
     }
 
     const nextQuestion = () => {
-        if (questionNumber >= data.length - 1) {
-            history("/score");
-        }
         setQuestionNumber(questionNumber + 1);
+        console.log("length of data",data.length)
         setAnswered(false);
     }
 
 
     return (
         <div className="">
-            <p className="fixed bg-purple-600/50 right-5 border-blue-400 border-4 rounded-full text-yellow-400 font-bold px-4 py-4">
-                Your Score is {score}
-            </p>
-            {fetched &&
-                <div key={data[questionNumber].id} className="border rounded-lg py-4 mx-4 my-4 px-4">
+            {fetched && <>
+            {questionNumber <= data.length-1 ? (
+                <div key={data[questionNumber].id} className="border border-blue-secondary h-min-80 rounded-lg mx-20 my-4 px-12 py-12">
                     <h1 className="text-xl mb-2">{data[questionNumber].Questions}</h1>
                     {!answered && (
                         <div className="mt-4">
-                            <button id="ansA" className={`border mx-4 bg-blue-400 hover:bg-blue-500 text-white font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
+                            <button id="ansA" className={`border mx-4 bg-white-secondary hover:bg-white-primary text-purple-secondary font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
                                 {data[questionNumber].A}
                             </button>
-                            <button id="ansB" className={`border mx-4 bg-blue-400 hover:bg-blue-500 text-white font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
+                            <button id="ansB" className={`border mx-4 bg-white-secondary hover:bg-white-primary text-purple-secondary font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
                                 {data[questionNumber].B}
                             </button>
-                            <button id="ansC" className={`border mx-4 bg-blue-400 hover:bg-blue-500 text-white font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
+                            <button id="ansC" className={`border mx-4 bg-white-secondary hover:bg-white-primary text-purple-secondary font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
                                 {data[questionNumber].C}
                             </button>
-                            <button id="ansD" className={`border mx-4 bg-blue-400 hover:bg-blue-500 text-white font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
+                            <button id="ansD" className={`border mx-4 bg-white-secondary hover:bg-white-primary text-purple-secondary font-medium px-4 py-4 my-2 rounded ${answered && `opacity-50`}`} onClick={(event) => handleAnswer(event)}>
                                 {data[questionNumber].D}
                             </button>
                         </div>
@@ -87,20 +84,28 @@ export default function Quiz() {
                     {answered && (
                         <>
                             <div>
-                                <p>{correctAnswer ? "Thats Correct!" : "Oops! That was Incorrect."}</p>
-                                <p>{correctAnswer ? "Your answer was" : "Correct Answer was "} <span className="text-green-500">{data[questionNumber].Ans}</span></p>
-                                <p>Explanation : {data[questionNumber].Explanation}</p>
+                                <p className={`text-center ${!correctAnswer ? `text-red-600` : `text-green-600`} font-extrabold mt-12`}>{correctAnswer ? "Thats Correct!" : "Oops! That was Incorrect."}</p>
+                                <p className="text-center text-3xl rounded-full text-yellow-400 font-bold px-4 py-4">
+                                    Your Score is {score}
+                                </p>
                             </div>
+                            <div className="w-full flex justify-end">
                             <button
-                                className="flex justify-end w-full text-blue-400 font-bold cursor-pointer px-2"
+                                className="flex text-purple-primary font-bold cursor-pointer px-2"
                                 onClick={nextQuestion}
                             >
                                 Next Question
                             </button>
+                            </div>
                         </>
                     )}
                 </div>
-            }
+            ) : (
+                <>
+                    <ScoreDisplay data={data} score={score} user={user}/>
+                </>
+            )}
+            </>}
         </div>
     );
 }
