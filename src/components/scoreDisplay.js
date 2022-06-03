@@ -4,13 +4,13 @@ export default function ScoreDisplay({ data, score, user }) {
             <div className="flex flex-col justify-center items-center my-4 mobiles:mx-4 text-center gap-2">
                 {score < data.length / 2 ? (
                     <>
-                        <img alt="sad" className="w-1/6 my-2" src="/sad.png" />
+                        <img alt="sad" className="w-1/6 my-2" src="/emotes/sad.png" />
                         <p className="text-red-400 text-2xl">You need to try harder {user}!</p>
                     </>
                 )
                     : (
                         <>
-                            <img alt="happy" className="w-1/6 my-2" src="/happy.png" />
+                            <img alt="happy" className="w-1/6 my-2" src="/emotes/happy.png" />
                             <p className="text-green-400 text-2xl">That was amazing {user}!</p>
                         </>
                     )}

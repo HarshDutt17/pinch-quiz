@@ -466,6 +466,22 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-backdrop-sepia:  ;
 }
 
+.absolute {
+  position: absolute;
+}
+
+.bottom-0 {
+  bottom: 0px;
+}
+
+.right-10 {
+  right: 2.5rem;
+}
+
+.right-5 {
+  right: 1.25rem;
+}
+
 .mx-24 {
   margin-left: 6rem;
   margin-right: 6rem;
@@ -543,6 +559,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .w-1\/6 {
   width: 16.666667%;
+}
+
+.w-screen {
+  width: 100vw;
 }
 
 .cursor-pointer {

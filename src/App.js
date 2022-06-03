@@ -32,6 +32,7 @@ function App() {
               Start
             </button>
           </form>
+          <p className="absolute bottom-0 text-center right-5 text-sm">by Harsh Dutt</p>
         </div>
       }
       {start && <Quiz user={user} />}
