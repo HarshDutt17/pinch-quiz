@@ -1,7 +1,7 @@
 export default function ScoreDisplay({ data, score, user }) {
     return (
         <div>
-            <div className="flex flex-col justify-center items-center my-4 gap-2">
+            <div className="flex flex-col justify-center items-center my-4 mobiles:mx-4 text-center gap-2">
                 {score < data.length / 2 ? (
                     <>
                         <img alt="sad" className="w-1/6 my-2" src="/sad.png" />
